@@ -118,10 +118,10 @@
 
       document.getElementById("msg").innerText = "Compressing...";
 
-      const res = await fetch("http://localhost:5000/compress", {
-        method: "POST",
-        body: formData
-      });
+      const res = await fetch("https://image-compressor-kqm9.onrender.com/compress", {
+      method: "POST",
+      body: formData
+     });
 
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
