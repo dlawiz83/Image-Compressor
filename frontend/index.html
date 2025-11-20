@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Image Compressor</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+
+    body {
+      background: #f5f6f7;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 35px;
+      width: 360px;
+      border-radius: 16px;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .fileBox {
+      border: 2px dashed #c9ccd1;
+      padding: 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-bottom: 18px;
+      background: #fafafa;
+      transition: 0.2s;
+      color: #555;
+      display: block;
+    }
+
+    .fileBox:hover {
+      background: #f0f0f0;
+      border-color: #bbb;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      background: #111827;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background: #1f2937;
+    }
+
+    #msg {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #666;
+      min-height: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Image Compressor</h1>
+
+    <label class="fileBox">
+      <span id="fileLabel">Click to select image</span>
+      <input type="file" id="fileInput" onchange="updateLabel()">
+    </label>
+
+    <button onclick="upload()">Compress Image</button>
+
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    function updateLabel() {
+      const file = document.getElementById("fileInput").files[0];
+      document.getElementById("fileLabel").innerText = file ? file.name : "Click to select image";
+    }
+
+    async function upload() {
+      const file = document.getElementById("fileInput").files[0];
+
+      if (!file) {
+        document.getElementById("msg").innerText = "Please choose an image first.";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      document.getElementById("msg").innerText = "Compressing...";
+
+      const res = await fetch("http://localhost:5000/compress", {
+        method: "POST",
+        body: formData
+      });
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "compressed.jpg";
+      a.click();
+
+      document.getElementById("msg").innerText = "Done! Your image is downloaded.";
+    }
+  </script>
+</body>
+</html>
